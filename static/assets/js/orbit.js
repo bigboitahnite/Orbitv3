@@ -84,12 +84,10 @@ function normalizeURL(input) {
 }
 
 function scramjetEncode(url) {
-  // Scramjet uses /scramjet/ prefix with encoded URL
-  try {
-    return `/scramjet/${btoa(url)}`;
-  } catch {
-    return `/scramjet/${encodeURIComponent(url)}`;
+  if (window.__scramjet$config) {
+    return __scramjet$config.prefix + __scramjet$config.codec.encode(url);
   }
+  return `/scramjet/${encodeURIComponent(url)}`;
 }
 
 function launchProxy() {

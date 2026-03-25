@@ -31,17 +31,15 @@
 })();
 
 // ── Scramjet Service Worker Registration ──
-(async function registerSW() {
-  if (!navigator.serviceWorker) return;
-  try {
-    const reg = await navigator.serviceWorker.register("/scramjet/scramjet.sync.js", {
+async function initScramjet() {
+  // Register SW first
+  if (navigator.serviceWorker) {
+    await navigator.serviceWorker.register("/scramjet/scramjet.sync.js", {
       scope: "/scramjet/"
     });
-    console.log("🚀 Scramjet SW registered");
-  } catch (e) {
-    console.error("SW registration failed:", e);
+    await navigator.serviceWorker.ready;
   }
-})();
+  // then rest of init...
 
 // ── bare-mux + libcurl transport setup ──
 async function setupTransport() {

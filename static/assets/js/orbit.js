@@ -32,12 +32,11 @@
 
 // ── Scramjet Service Worker Registration ──
 (async function registerSW() {
-  if (!navigator.serviceWorker) {
-    console.warn("Service Workers not supported — proxy may not work.");
-    return;
-  }
+  if (!navigator.serviceWorker) return;
   try {
-    await navigator.serviceWorker.register("/scramjet/sw.js", { scope: "/scramjet/" });
+    const reg = await navigator.serviceWorker.register("/scramjet/scramjet.sync.js", {
+      scope: "/scramjet/"
+    });
     console.log("🚀 Scramjet SW registered");
   } catch (e) {
     console.error("SW registration failed:", e);
@@ -84,10 +83,11 @@ function normalizeURL(input) {
 }
 
 function scramjetEncode(url) {
-  if (window.__scramjet$config) {
-    return __scramjet$config.prefix + __scramjet$config.codec.encode(url);
+  try {
+    return "/scramjet/scramjet.all.js#" + encodeURIComponent(url);
+  } catch {
+    return `/scramjet/${encodeURIComponent(url)}`;
   }
-  return `/scramjet/${encodeURIComponent(url)}`;
 }
 
 function launchProxy() {
